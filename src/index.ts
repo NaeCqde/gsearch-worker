@@ -1,8 +1,11 @@
-function makeHeaders(aec: string, nid: string): Record<string, string> {
+function makeHeaders(cookies: Record<string, string>): Record<string, string> {
     const headers: Record<string, string> = {
         Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br, zstd',
         'Accept-Language': 'ja,en-US;q=0.7,en;q=0.3',
+        Cookie: Object.entries(cookies)
+            .map(([k, v]) => `${k}=${v}`)
+            .join(';'),
         DNT: '1',
         Priority: 'u=0, i',
         'Sec-Fetch-Dest': 'document',
@@ -14,10 +17,6 @@ function makeHeaders(aec: string, nid: string): Record<string, string> {
         'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
     };
-
-    headers['Cookie'] = Object.entries({ aec, nid })
-        .map(([k, v]) => `${k}=${v}`)
-        .join(';');
 
     return headers;
 }
@@ -49,12 +48,16 @@ export default {
             if (start) go.searchParams.set('start', start);
 
             const resp = await fetch(go, {
-                headers: makeHeaders(env.AEC, env.NID),
+                //headers: makeHeaders({ AEC: env.AEC, DV: env.DV, NID: env.NID }),
+                headers: makeHeaders({ SG_SS: env.SG_SS }),
             });
 
             if (resp.status !== 200) return new Response('Internal Server Error', { status: 500 });
 
-            const splitedOne = (await resp.text()).split('var m={', 2);
+            const text = await resp.text();
+            console.log(text.slice(0, 500));
+
+            const splitedOne = text.split('var m={', 2);
             if (splitedOne.length === 2) {
                 const splitedTwo = splitedOne[1].split(';var a=m;', 2);
 
