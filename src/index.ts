@@ -1,25 +1,26 @@
-const COOKIES = {
-    AEC: 'AZ6Zc-Uq7ktG4j3fiwFVdtiCVdWyDO42dxEGWAAnD3SXoeKKwNxsX49Re8Y',
-    NID: '520=Cv0CPy2AaVMPSLE6xDrdp6TZO2Pbq6gB8jxXZwTuGoWfwuWtZbdQLhOe4EwzgHbQYRt8U5hB0ez0kNiDrqyIbAYNONVZ8EQbxDyExNkXju0eCOOBPaAt4fPFR-WzSlhE-_junO-FmksgpzXbF6vFctjDzQ6rMPI0Tdv4RmWSp9O0tjDjsMCH3ELFgSVgbsV6lSkIHV1WutBDb4TbT2FZFJ5bkCYn75_IQ51agj8o48WMWPQWHBSJnXg',
-};
-const headers = {
-    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Encoding': 'gzip, deflate, br, zstd',
-    'Accept-Language': 'ja,en-US;q=0.7,en;q=0.3',
-    Cookie: Object.entries(COOKIES)
+function makeHeaders(aec: string, nid: string): Record<string, string> {
+    const headers: Record<string, string> = {
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept-Language': 'ja,en-US;q=0.7,en;q=0.3',
+        DNT: '1',
+        Priority: 'u=0, i',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-GPC': '1',
+        TE: 'trailers',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
+    };
+
+    headers['Cookie'] = Object.entries({ aec, nid })
         .map(([k, v]) => `${k}=${v}`)
-        .join(';'),
-    DNT: '1',
-    Priority: 'u=0, i',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-GPC': '1',
-    TE: 'trailers',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
-};
+        .join(';');
+
+    return headers;
+}
 
 export default {
     async fetch(request, env, ctx): Promise<Response> {
@@ -48,7 +49,7 @@ export default {
             if (start) go.searchParams.set('start', start);
 
             const resp = await fetch(go, {
-                headers,
+                headers: makeHeaders(env.AEC, env.NID),
             });
 
             if (resp.status !== 200) return new Response('Internal Server Error', { status: 500 });
