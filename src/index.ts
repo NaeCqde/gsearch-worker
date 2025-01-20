@@ -1,3 +1,8 @@
+import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
+import { parse as parseSetCookie } from 'set-cookie-parser';
+
+import { Cookie, cookies } from './schema.js';
+
 function makeHeaders(cookies: Record<string, string>): Record<string, string> {
     const headers: Record<string, string> = {
         Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -41,49 +46,39 @@ export default {
                 }
             }
 
+            const db = drizzle(env.DB);
+
             const go = new URL('https://www.google.com/search');
             go.searchParams.set('client', 'firefox-b-d');
 
             go.searchParams.set('q', decodeURIComponent(q));
             if (start) go.searchParams.set('start', start);
 
-            const resp = await fetch(go, {
-                headers: makeHeaders({ AEC: env.AEC, DV: env.DV, NID: env.NID }),
-                //headers: makeHeaders({ SG_SS: env.SG_SS }),
-            });
+            let c = await db.select().from(cookies);
+            if (!c.length) {
+                c = [await fetchCookiesAndSave(db, env.SG_SS)];
+            }
 
-            if (resp.status !== 200) throw Error((await resp.text()).slice(0, 500));
+            let retried = false;
+            while (true) {
+                const resp = await fetch(go, {
+                    headers: makeHeaders({ AEC: c[0].aec, NID: c[0].nid }),
+                });
 
-            const text = await resp.text();
-            console.log(text.slice(0, 500));
+                if (resp.status !== 200) throw Error((await resp.text()).slice(0, 500));
 
-            const splitedOne = text.split('var m={', 2);
-            if (splitedOne.length === 2) {
-                const splitedTwo = splitedOne[1].split(';var a=m;', 2);
+                let text = await resp.text();
+                console.log(text.slice(0, 500));
 
-                if (splitedTwo.length === 2) {
-                    const data: Record<string, any[]> = JSON.parse('{' + splitedTwo[0]);
-                    const results: { title: string; url: string }[] = [];
+                if (!text.includes('var m={')) {
+                    if (retried) break;
 
-                    for (const k of Object.keys(data)) {
-                        const d = data[k].filter((v) => v);
-
-                        if (d.length >= 4) {
-                            if (
-                                typeof d[0] === 'string' &&
-                                d[0].startsWith('http') &&
-                                Array.isArray(d[3]) &&
-                                d[3].length >= 2
-                            )
-                                results.push({
-                                    title: d[3][0],
-                                    url: d[0],
-                                });
-                        }
-                    }
-
-                    return Response.json(results);
+                    c = [await fetchCookiesAndSave(db, env.SG_SS)];
+                    retried = true;
+                    continue;
                 }
+
+                return Response.json(await parseResult(text));
             }
 
             throw Error('scraping failure');
@@ -92,3 +87,50 @@ export default {
         }
     },
 } satisfies ExportedHandler<Env>;
+
+async function parseResult(text: string) {
+    const splitedOne = text.split('var m={', 2);
+    if (splitedOne.length === 2) {
+        const splitedTwo = splitedOne[1].split(';var a=m;', 2);
+
+        if (splitedTwo.length === 2) {
+            const data: Record<string, any[]> = JSON.parse('{' + splitedTwo[0]);
+            const results: { title: string; url: string }[] = [];
+
+            for (const k of Object.keys(data)) {
+                const d = data[k].filter((v) => v);
+
+                if (d.length >= 4) {
+                    if (
+                        typeof d[0] === 'string' &&
+                        d[0].startsWith('http') &&
+                        Array.isArray(d[3]) &&
+                        d[3].length >= 2
+                    )
+                        results.push({
+                            title: d[3][0],
+                            url: d[0],
+                        });
+                }
+            }
+
+            return results;
+        }
+    }
+
+    throw Error('parsing failure');
+}
+
+async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise<Cookie> {
+    const url = new URL('https://www.google.com/search');
+    url.searchParams.set('client', 'firefox-b-d');
+    url.searchParams.set('q', 'ohio');
+
+    const resp = await fetch(url, { headers: makeHeaders({ SG_SS: sgSS }) });
+    const c = parseSetCookie(resp.headers.getSetCookie(), { map: true });
+
+    await db.delete(cookies);
+    return (
+        await db.insert(cookies).values({ aec: c['AEC'].value, nid: c['NID'].value }).returning()
+    )[0];
+}

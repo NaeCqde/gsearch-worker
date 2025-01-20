@@ -6,11 +6,19 @@
         "deploy": "wrangler deploy",
         "dev": "wrangler dev",
         "start": "wrangler dev",
-        "cf-typegen": "wrangler types"
+        "cf-typegen": "wrangler types",
+        "generate": "drizzle-kit generate",
+        "up": "drizzle-kit up"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20250109.0",
+        "@types/set-cookie-parser": "^2.4.10",
+        "drizzle-kit": "^0.30.2",
         "typescript": "^5.5.2",
         "wrangler": "^3.103.2"
+    },
+    "dependencies": {
+        "drizzle-orm": "^0.38.4",
+        "set-cookie-parser": "^2.7.1"
     }
 }
