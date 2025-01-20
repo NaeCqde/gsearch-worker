@@ -8,7 +8,7 @@
         "start": "wrangler dev",
         "cf-typegen": "wrangler types",
         "generate": "drizzle-kit generate",
-        "up": "wrangler d1 migrations apply gsearch --remote"
+        "up": "wrangler d1 migrations apply gsearch"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20250109.0",

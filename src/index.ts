@@ -130,7 +130,7 @@ async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise
     url.searchParams.set('q', 'ohio');
 
     const resp = await fetch(url, { headers: makeHeaders({ SG_SS: sgSS }) });
-    console.log((await resp.text()).slice(0, 500));
+    console.log(await resp.text());
     const c = parseSetCookie(resp.headers.getSetCookie(), { map: true });
 
     await db.delete(cookies).all();
