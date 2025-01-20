@@ -54,7 +54,8 @@ export default {
             go.searchParams.set('q', decodeURIComponent(q));
             if (start) go.searchParams.set('start', start);
 
-            let c = await db.select().from(cookies).all();
+            let c: Cookie[] = await db.select().from(cookies).all();
+            console.log(c);
             if (!c.length) {
                 c = [await fetchCookiesAndSave(db, env.SG_SS)];
             }
@@ -130,7 +131,7 @@ async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise
     url.searchParams.set('q', 'ohio');
 
     const resp = await fetch(url, { headers: makeHeaders({ SG_SS: sgSS }) });
-    console.log(await resp.text());
+    console.log((await resp.text()).slice(0, 500));
     const c = parseSetCookie(resp.headers.getSetCookie(), { map: true });
 
     await db.delete(cookies).all();
