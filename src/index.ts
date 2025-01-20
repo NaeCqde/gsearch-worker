@@ -55,7 +55,6 @@ export default {
             if (start) go.searchParams.set('start', start);
 
             let c: Cookie[] = await db.select().from(cookies).all();
-            console.log(c);
             if (!c.length) {
                 c = [await fetchCookiesAndSave(db, env.SG_SS)];
             }
