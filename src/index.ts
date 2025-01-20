@@ -54,7 +54,7 @@ export default {
             go.searchParams.set('q', decodeURIComponent(q));
             if (start) go.searchParams.set('start', start);
 
-            let c = await db.select().from(cookies);
+            let c = await db.select().from(cookies).all();
             if (!c.length) {
                 c = [await fetchCookiesAndSave(db, env.SG_SS)];
             }
@@ -65,7 +65,10 @@ export default {
                     headers: makeHeaders({ AEC: c[0].aec, NID: c[0].nid }),
                 });
 
-                if (resp.status !== 200) throw Error((await resp.text()).slice(0, 500));
+                if (resp.status !== 200) {
+                    console.error((await resp.text()).slice(0, 500));
+                    throw Error();
+                }
 
                 let text = await resp.text();
                 console.log(text.slice(0, 500));
@@ -127,9 +130,10 @@ async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise
     url.searchParams.set('q', 'ohio');
 
     const resp = await fetch(url, { headers: makeHeaders({ SG_SS: sgSS }) });
+    console.log((await resp.text()).slice(0, 500));
     const c = parseSetCookie(resp.headers.getSetCookie(), { map: true });
 
-    await db.delete(cookies);
+    await db.delete(cookies).all();
     return (
         await db.insert(cookies).values({ aec: c['AEC'].value, nid: c['NID'].value }).returning()
     )[0];

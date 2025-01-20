@@ -1,1 +1,0 @@
-ALTER TABLE `cookies` DROP COLUMN `dv`;
