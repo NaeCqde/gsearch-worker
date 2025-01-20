@@ -52,7 +52,7 @@ export default {
                 headers: makeHeaders({ SG_SS: env.SG_SS }),
             });
 
-            if (resp.status !== 200) return new Response('Internal Server Error', { status: 500 });
+            if (resp.status !== 200) throw Error((await resp.text()).slice(0, 500));
 
             const text = await resp.text();
             console.log(text.slice(0, 500));
@@ -86,7 +86,7 @@ export default {
                 }
             }
 
-            return new Response('Internal Server Error', { status: 500 });
+            throw Error('scraping failure');
         } else {
             return new Response('not found', { status: 404 });
         }
