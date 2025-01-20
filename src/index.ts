@@ -48,8 +48,8 @@ export default {
             if (start) go.searchParams.set('start', start);
 
             const resp = await fetch(go, {
-                //headers: makeHeaders({ AEC: env.AEC, DV: env.DV, NID: env.NID }),
-                headers: makeHeaders({ SG_SS: env.SG_SS }),
+                headers: makeHeaders({ AEC: env.AEC, DV: env.DV, NID: env.NID }),
+                //headers: makeHeaders({ SG_SS: env.SG_SS }),
             });
 
             if (resp.status !== 200) throw Error((await resp.text()).slice(0, 500));
