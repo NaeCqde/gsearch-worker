@@ -65,13 +65,14 @@ export default {
                     headers: makeHeaders({ AEC: c[0].aec, NID: c[0].nid }),
                 });
 
+                let text = await resp.text();
+
                 if (resp.status !== 200) {
-                    console.error((await resp.text()).slice(0, 500));
+                    console.error(text.slice(0, 500));
                     throw Error();
                 }
 
-                let text = await resp.text();
-                console.log(text.slice(0, 500));
+                console.debug(text.slice(0, 500));
 
                 if (!text.includes('var m={')) {
                     if (retried) break;
@@ -130,7 +131,7 @@ async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise
     url.searchParams.set('q', 'ohio');
 
     const resp = await fetch(url, { headers: makeHeaders({ SG_SS: sgSS }) });
-    console.log((await resp.text()).slice(0, 500));
+    console.debug((await resp.text()).slice(0, 500));
     const c = parseSetCookie(resp.headers.getSetCookie(), { map: true });
 
     await db.delete(cookies).all();
