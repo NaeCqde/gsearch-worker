@@ -1,0 +1,17 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "gsearch",
+    "main": "src/index.ts",
+    "compatibility_date": "2025-01-09",
+    "workers_dev": false,
+    "preview_urls": true,
+    "route": "okazuri-api.nae.quest/search*",
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "gsearch",
+            "database_id": "98317ae4-5dba-4c82-852b-c2fd8a0e0e0c",
+            "migrations_dir": "drizzle/migrations"
+        }
+    ]
+}
