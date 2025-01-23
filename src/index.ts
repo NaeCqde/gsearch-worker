@@ -62,7 +62,11 @@ export default {
             let retried = false;
             while (true) {
                 const resp = await fetch(go, {
-                    headers: makeHeaders({ AEC: c[0].aec, "__Secure-ENID": c[0].nid }),
+                    headers: makeHeaders({
+                        AEC: c[0].aec,
+                        NID: c[0].nid || '',
+                        '__Secure-ENID': c[0].secureEnid || '',
+                    }),
                 });
 
                 let text = await resp.text();
@@ -137,6 +141,13 @@ async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise
 
     await db.delete(cookies).all();
     return (
-        await db.insert(cookies).values({ aec: c['AEC'].value, nid: c['__Secure-ENID'].value }).returning()
+        await db
+            .insert(cookies)
+            .values({
+                aec: c['AEC'].value,
+                nid: (c['NID'] || {}).value,
+                secureEnid: (c['__Secure-ENID'] || {}).value,
+            })
+            .returning()
     )[0];
 }
