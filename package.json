@@ -3,19 +3,19 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "deploy": "wrangler deploy",
+        "deploy": "echo y | pnpm run migrate && wrangler deploy",
         "dev": "wrangler dev",
         "start": "wrangler dev",
         "cf-typegen": "wrangler types",
         "generate": "drizzle-kit generate",
-        "up": "wrangler d1 migrations apply gsearch"
+        "migrate": "wrangler d1 migrations apply gsearch --remote"
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^4.20250109.0",
+        "@cloudflare/workers-types": "^4.20250121.0",
         "@types/set-cookie-parser": "^2.4.10",
         "drizzle-kit": "^0.30.2",
-        "typescript": "^5.5.2",
-        "wrangler": "^3.103.2"
+        "typescript": "^5.7.3",
+        "wrangler": "^3.105.0"
     },
     "dependencies": {
         "drizzle-orm": "^0.38.4",
