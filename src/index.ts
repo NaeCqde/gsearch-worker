@@ -71,7 +71,7 @@ export default {
                 let text = await resp.text();
                 console.info(text.slice(0, 500));
 
-                if (resp.status !== 200 && !text.includes('var m={')) {
+                if (resp.status !== 200 || !text.includes('var m={')) {
                     if (retried) break;
 
                     c = [await fetchCookiesAndSave(db, env.SG_SS)];
