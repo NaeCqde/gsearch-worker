@@ -3,12 +3,12 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "deploy": "echo y | pnpm run migrate && wrangler deploy",
+        "deploy": "echo y | pnpm run migrate --remote && wrangler deploy",
         "dev": "wrangler dev",
         "start": "wrangler dev",
         "cf-typegen": "wrangler types",
         "generate": "drizzle-kit generate",
-        "migrate": "wrangler d1 migrations apply gsearch --remote"
+        "migrate": "wrangler d1 migrations apply gsearch"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20250121.0",

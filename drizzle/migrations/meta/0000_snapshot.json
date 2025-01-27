@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "af45fbc7-4347-4009-bb98-22c836abdcfb",
+  "id": "66da4e57-04ce-4b54-96b7-23f6353012cc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "cookies": {
@@ -18,7 +18,14 @@
           "name": "nid",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "secureEnid": {
+          "name": "secureEnid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         }
       },

@@ -47,7 +47,6 @@ export default {
             }
 
             const db = drizzle(env.DB);
-
             const go = new URL('https://www.google.com/search');
             go.searchParams.set('client', 'firefox-b-d');
 
@@ -70,15 +69,9 @@ export default {
                 });
 
                 let text = await resp.text();
+                console.info(text.slice(0, 500));
 
-                if (resp.status !== 200) {
-                    console.error(text.slice(0, 500));
-                    throw Error();
-                }
-
-                console.debug(text.slice(0, 500));
-
-                if (!text.includes('var m={')) {
+                if (resp.status !== 200 && !text.includes('var m={')) {
                     if (retried) break;
 
                     c = [await fetchCookiesAndSave(db, env.SG_SS)];
@@ -130,16 +123,18 @@ async function parseResult(text: string) {
 }
 
 async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise<Cookie> {
+    await db.delete(cookies).all();
     const url = new URL('https://www.google.com/search');
     url.searchParams.set('client', 'firefox-b-d');
     url.searchParams.set('q', 'ohio');
 
-    const resp = await fetch(url, { headers: makeHeaders({ SG_SS: sgSS }) });
-    console.debug((await resp.text()).slice(0, 500));
+    const resp = await fetch(url, {
+        headers: makeHeaders({ SG_SS: sgSS }),
+    });
     const c = parseSetCookie(resp.headers.getSetCookie(), { map: true });
-    console.debug(c);
+    console.info((await resp.text()).slice(0, 500));
+    console.info(c);
 
-    await db.delete(cookies).all();
     return (
         await db
             .insert(cookies)
