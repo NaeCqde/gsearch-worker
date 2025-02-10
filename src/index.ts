@@ -5,8 +5,8 @@ import { Cookie, cookies } from './schema.js';
 
 function makeHeaders(cookies: Record<string, string>): Record<string, string> {
     const headers: Record<string, string> = {
-        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 ',
+        'Accept-Encoding': 'br, gzip',
         'Accept-Language': 'ja,en-US;q=0.7,en;q=0.3',
         Cookie: Object.entries(cookies)
             .map(([k, v]) => `${k}=${v}`)
@@ -20,7 +20,7 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
         TE: 'trailers',
         'Upgrade-Insecure-Requests': '1',
         'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
+            ' 	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0 ',
     };
 
     return headers;
