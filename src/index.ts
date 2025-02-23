@@ -5,22 +5,38 @@ import { Cookie, cookies } from './schema.js';
 
 function makeHeaders(cookies: Record<string, string>): Record<string, string> {
     const headers: Record<string, string> = {
-        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 ',
-        'Accept-Encoding': 'br, gzip',
-        'Accept-Language': 'ja,en-US;q=0.7,en;q=0.3',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept-Language': 'ja',
         Cookie: Object.entries(cookies)
             .map(([k, v]) => `${k}=${v}`)
             .join(';'),
-        DNT: '1',
+        Dnt: '1',
+        Downlink: '4.9',
+        Preferanonymous: '1',
         Priority: 'u=0, i',
+        Referer:
+            'https://www.google.com/search?q=ohio&sourceid=chrome&ie=UTF-8',
+        rtt: '50',
+        'sec-ch-prefers-color-scheme': 'dark',
+        'sec-ch-ua': '"Not(A:Brand";v="99", "Chromium";v="133", "Google Chrome";v="133"',
+        'sec-ch-ua-arch': '"x86"',
+        'sec-ch-ua-bitness': '"64"',
+        'sec-ch-ua-form-factors': '"Desktop"',
+        'sec-ch-ua-full-version': '"133.0.6943.127"',
+        'sec-ch-ua-full-version-list':
+            '"Not(A:Brand";v="99.0.0.0", "Chromium";v="133.0.6943.127", "Google Chrome";v="133.0.6943.127"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-model': '',
+        'sec-ch-ua-platform': 'Windows',
+        'sec-ch-ua-platform-version': '19.0.0',
+        'sec-ch-ua-wow64': '?0',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'same-origin',
-        'Sec-GPC': '1',
-        TE: 'trailers',
         'Upgrade-Insecure-Requests': '1',
         'User-Agent':
-            ' 	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0 ',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
     };
 
     return headers;
@@ -48,7 +64,7 @@ export default {
 
             const db = drizzle(env.DB);
             const go = new URL('https://www.google.com/search');
-            go.searchParams.set('client', 'firefox-b-d');
+            go.searchParams.set('client', 'chrome');
 
             go.searchParams.set('q', decodeURIComponent(q));
             if (start) go.searchParams.set('start', start);
@@ -125,7 +141,7 @@ async function parseResult(text: string) {
 async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise<Cookie> {
     await db.delete(cookies).all();
     const url = new URL('https://www.google.com/search');
-    url.searchParams.set('client', 'firefox-b-d');
+    url.searchParams.set('client', 'chrome');
     url.searchParams.set('q', 'ohio');
 
     const resp = await fetch(url, {
