@@ -19,13 +19,13 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
             'https://www.google.com/search?q=ohio&sourceid=chrome&ie=UTF-8',
         rtt: '50',
         'sec-ch-prefers-color-scheme': 'dark',
-        'sec-ch-ua': '"Not(A:Brand";v="99", "Chromium";v="133", "Google Chrome";v="133"',
+        'sec-ch-ua': '"Not(A:Brand";v="99", "Chromium";v="134", "Google Chrome";v="134"',
         'sec-ch-ua-arch': '"x86"',
         'sec-ch-ua-bitness': '"64"',
         'sec-ch-ua-form-factors': '"Desktop"',
-        'sec-ch-ua-full-version': '"133.0.6943.127"',
+        'sec-ch-ua-full-version': '"134.0.6998.36"',
         'sec-ch-ua-full-version-list':
-            '"Not(A:Brand";v="99.0.0.0", "Chromium";v="133.0.6943.127", "Google Chrome";v="133.0.6943.127"',
+            '"Not(A:Brand";v="99.0.0.0", "Chromium";v="134.0.6998.36", "Google Chrome";v="134.0.6998.36"',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-model': '',
         'sec-ch-ua-platform': 'Windows',
@@ -36,7 +36,7 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
         'Sec-Fetch-Site': 'same-origin',
         'Upgrade-Insecure-Requests': '1',
         'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1134.0.6998.36 Safari/537.36',
     };
 
     return headers;
