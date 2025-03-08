@@ -36,7 +36,7 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
         'Sec-Fetch-Site': 'same-origin',
         'Upgrade-Insecure-Requests': '1',
         'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1134.0.6998.36 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.36 Safari/537.36',
     };
 
     return headers;
