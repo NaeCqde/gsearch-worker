@@ -15,7 +15,7 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
         Downlink: '10',
         Preferanonymous: '1',
         Priority: 'u=0, i',
-        Referer: 'https://www.google.com/search?q=ohio&oq=ohio&sourceid=chrome&ie=UTF-8',
+        Referer: 'https://www.google.com/search?q=a&oq=a&sourceid=chrome&ie=UTF-8',
         Rtt: '50',
         'Sec-Ch-Prefers-Color-Scheme': 'dark',
         'Sec-Ch-Ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Microsoft Edge";v="134"',
@@ -140,8 +140,10 @@ async function parseResult(text: string) {
 async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise<Cookie> {
     await db.delete(cookies).all();
     const url = new URL('https://www.google.com/search');
+    url.searchParams.set('q', 'a');
+    url.searchParams.set('oq', 'a');
     url.searchParams.set('client', 'chrome');
-    url.searchParams.set('q', 'ohio');
+    url.searchParams.set('ie', 'UTF-8');
 
     const resp = await fetch(url, {
         headers: makeHeaders({ SG_SS: sgSS }),
