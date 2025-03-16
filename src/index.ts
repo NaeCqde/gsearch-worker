@@ -16,7 +16,7 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
         Preferanonymous: '1',
         Priority: 'u=0, i',
         Referer: 'https://www.google.com/search?q=ohio&oq=ohio&sourceid=chrome&ie=UTF-8',
-        Rtt: '0',
+        Rtt: '50',
         'Sec-Ch-Prefers-Color-Scheme': 'dark',
         'Sec-Ch-Ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Microsoft Edge";v="134"',
         'Sec-Ch-Ua-Arch': '"arm"',
@@ -26,13 +26,14 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
         'Sec-Ch-Ua-Full-Version-List':
             '"Chromium";v="134.0.6998.89", "Not:A-Brand";v="24.0.0.0", "Microsoft Edge";v="134.0.3124.68"',
         'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-ch-Ua-Model': '""',
         'Sec-Ch-Ua-Platform': '"macOS"',
         'Sec-Ch-Ua-Platform-Version': '"15.4.0"',
         'Sec-Ch-Ua-Wow64': '?0',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'same-origin',
-        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
         'User-Agent':
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0',
     };
