@@ -12,7 +12,7 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
             .map(([k, v]) => `${k}=${v}`)
             .join(';'),
         Dnt: '1',
-        Downlink: '4.9',
+        Downlink: '4.85',
         Preferanonymous: '1',
         Priority: 'u=0, i',
         Referer: 'https://www.google.com/search?q=ohio&sourceid=chrome&ie=UTF-8',
@@ -27,7 +27,7 @@ function makeHeaders(cookies: Record<string, string>): Record<string, string> {
             '"Chromium";v="134.0.6998.89", "Not:A-Brand";v="24.0.0.0", "Microsoft Edge";v="134.0.3124.68"',
         'Sec-Ch-Ua-Mobile': '?0',
         'Sec-Ch-Ua-Platform': '"macOS"',
-        'Sec-Ch-Ua-Platform-Version': '15.4.0',
+        'Sec-Ch-Ua-Platform-Version': '"15.4.0"',
         'Sec-Ch-Ua-Wow64': '?0',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
