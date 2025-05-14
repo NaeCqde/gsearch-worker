@@ -70,7 +70,7 @@ export default {
             let c: Cookie[] = await db.select().from(cookies).all();
             console.log(c);
             if (!c.length) {
-                c = [await fetchCookiesAndSave(db, env.SG_SS)];
+                c = [await fetchCookiesAndSave(db)];
             }
 
             let retried = false;
@@ -89,7 +89,7 @@ export default {
                 if (resp.status !== 200 || !text.includes('var m={')) {
                     if (retried) break;
 
-                    c = [await fetchCookiesAndSave(db, env.SG_SS)];
+                    c = [await fetchCookiesAndSave(db)];
                     retried = true;
                     continue;
                 }
@@ -137,7 +137,7 @@ async function parseResult(text: string) {
     throw Error('parsing failure');
 }
 
-async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise<Cookie> {
+async function fetchCookiesAndSave(db: DrizzleD1Database): Promise<Cookie> {
     await db.delete(cookies).all();
     const url = new URL('https://www.google.com/search');
     url.searchParams.set('q', 'a');
