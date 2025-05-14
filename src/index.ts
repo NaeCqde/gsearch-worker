@@ -1,6 +1,6 @@
 import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
 
-import { Cookie, cookies } from './schema.js';
+import { Cookies, cookies } from './schema.js';
 
 function makeHeaders(cookies: Record<string, string>): Record<string, string> {
     const headers: Record<string, string> = {
@@ -67,7 +67,7 @@ export default {
             go.searchParams.set('q', decodeURIComponent(q));
             if (start) go.searchParams.set('start', start);
 
-            let c: Cookie[] = await db.select().from(cookies).all();
+            let c: Cookies[] = await db.select().from(cookies).all();
             console.log(c);
             if (!c.length) {
                 c = [await fetchCookiesAndSave(db)];
@@ -137,7 +137,13 @@ async function parseResult(text: string) {
     throw Error('parsing failure');
 }
 
-async function fetchCookiesAndSave(db: DrizzleD1Database): Promise<Cookie> {
+interface Cookie {
+    name: string;
+    value: string;
+    domain: string;
+}
+
+async function fetchCookiesAndSave(db: DrizzleD1Database): Promise<Cookies> {
     await db.delete(cookies).all();
     const url = new URL('https://www.google.com/search');
     url.searchParams.set('q', 'a');
@@ -145,12 +151,16 @@ async function fetchCookiesAndSave(db: DrizzleD1Database): Promise<Cookie> {
     url.searchParams.set('client', 'chrome');
     url.searchParams.set('ie', 'UTF-8');
 
-    const resp =
-        (await (
+    const resp = (
+        ((await (
             await fetch(
                 'https://github.com/kino-tkr/google-cookie-autogen/raw/refs/heads/main/cookies.json'
             )
-        ).json()) || ({} as any);
+        ).json()) as Cookie[]) || []
+    ).reduce((o: Record<string, Cookie>, v: Cookie) => {
+        o[v['name']] = v;
+        return o;
+    }, {} as Record<string, Cookie>);
     console.info(resp);
 
     if (!resp['AEC']) throw Error('cookies is none');

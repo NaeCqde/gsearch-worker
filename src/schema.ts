@@ -7,4 +7,4 @@ export const cookies = sqliteTable('cookies', {
     secureEnid: text(),
 });
 
-export type Cookie = InferSelectModel<typeof cookies>;
+export type Cookies = InferSelectModel<typeof cookies>;
