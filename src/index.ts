@@ -1,5 +1,4 @@
 import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
-import { parse as parseSetCookie } from 'set-cookie-parser';
 
 import { Cookie, cookies } from './schema.js';
 
@@ -69,6 +68,7 @@ export default {
             if (start) go.searchParams.set('start', start);
 
             let c: Cookie[] = await db.select().from(cookies).all();
+            console.log(c);
             if (!c.length) {
                 c = [await fetchCookiesAndSave(db, env.SG_SS)];
             }
@@ -145,20 +145,23 @@ async function fetchCookiesAndSave(db: DrizzleD1Database, sgSS: string): Promise
     url.searchParams.set('client', 'chrome');
     url.searchParams.set('ie', 'UTF-8');
 
-    const resp = await fetch(url, {
-        headers: makeHeaders({ SG_SS: sgSS }),
-    });
-    const c = parseSetCookie(resp.headers.getSetCookie(), { map: true });
-    console.info((await resp.text()).slice(0, 500));
-    console.info(c);
+    const resp =
+        (await (
+            await fetch(
+                'https://github.com/kino-tkr/google-cookie-autogen/raw/refs/heads/main/cookies.json'
+            )
+        ).json()) || ({} as any);
+    console.info(resp);
+
+    if (!resp['AEC']) throw Error('cookies is none');
 
     return (
         await db
             .insert(cookies)
             .values({
-                aec: c['AEC'].value,
-                nid: (c['NID'] || {}).value,
-                secureEnid: (c['__Secure-ENID'] || {}).value,
+                aec: resp['AEC'].value,
+                nid: (resp['NID'] || {}).value,
+                secureEnid: (resp['__Secure-ENID'] || {}).value,
             })
             .returning()
     )[0];
